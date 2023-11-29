@@ -33,12 +33,12 @@ const getState = ({ getStore, getActions, setStore }) => {
                     whatsapp: {
                         image: '',
                         number: '',
-                        alt: 'WhatsApp',
+                        alt: '',
                     },
                     mail: {
                         image: '',
                         adress: '',
-                        alt: 'Escríbenos un correo',
+                        alt: '',
                     },
                     reunionVirtual: {
                         image: '',
@@ -49,33 +49,33 @@ const getState = ({ getStore, getActions, setStore }) => {
                 teEsperamos: {
                     image: '',
                     link: '',
-                    alt: '',
+                    alt: '¡Te esperamos!',
                 },
                 textoLegal: {
-                    link: '',
+                    link: 'https://pocuro.cl/aviso-legal',
                     text: '',
                 },
                 redesSociales: {
                     facebook: {
                         image: '',
-                        link: '',
-                        alt: '',
+                        link: 'https://www.facebook.com/Pocuro.cl',
+                        alt: 'Pocuro en Facebook',
                     },
-                    twitter: {
+                    linkedin: {
                         image: '',
-                        link: '',
-                        alt: '',
+                        link: 'https://www.linkedin.com/company/pocuro-cl/',
+                        alt: 'Pocuro en LinkedIn',
                     },
                     instagram: {
                         image: '',
-                        link: '',
-                        alt: '',
+                        link: 'https://www.instagram.com/pocuro.cl/',
+                        alt: 'Pocuro en Instagram',
                     },
                 },
                 logo: {
                     image: '',
-                    link: '',
-                    alt: '',
+                    link: 'https://pocuro.cl/',
+                    alt: 'Web Pocuro',
                 },
             }
         },

@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useState, useEffect } from "react";
 import { Context } from "../store/appContext";
 import { Form, Button } from "react-bootstrap";
 import { Link } from "react-router-dom"; // Importa Link
@@ -6,6 +6,8 @@ import "../../styles/home.css";
 
 export const Home = () => {
     const { store, actions } = useContext(Context);
+
+    const [projectNames, setProjectNames] = useState([]);
 
     const [localEmailData, setLocalEmailData] = useState({
         nombreDelProyecto: store.email.nombreDelProyecto,
@@ -59,10 +61,10 @@ export const Home = () => {
                 link: store.email.redesSociales.facebook.link,
                 alt: store.email.redesSociales.facebook.alt,
             },
-            twitter: {
-                image: store.email.redesSociales.twitter.image,
-                link: store.email.redesSociales.twitter.link,
-                alt: store.email.redesSociales.twitter.alt,
+            linkedin: {
+                image: store.email.redesSociales.linkedin.image,
+                link: store.email.redesSociales.linkedin.link,
+                alt: store.email.redesSociales.linkedin.alt,
             },
             instagram: {
                 image: store.email.redesSociales.instagram.image,
@@ -77,6 +79,31 @@ export const Home = () => {
         },
     });
 
+    useEffect(() => {
+        // Aquí realizas la solicitud para obtener los datos desde la base de datos
+        const fetchData = async () => {
+            try {
+                const response = await fetch(`${process.env.BACKEND_URL}/api/get_email_data`);
+                if (!response.ok) {
+                    throw new Error('Error al obtener datos del servidor');
+                }
+
+                const data = await response.json();
+
+                // Actualiza el estado local con los datos obtenidos
+                setLocalEmailData(data.email_data);
+
+                // Actualiza el estado local con los nombres de proyectos
+                setProjectNames(data.project_names);
+            } catch (error) {
+                console.error('Error:', error);
+            }
+        };
+
+        fetchData(); // Llama a la función para obtener los datos cuando el componente se monta
+    }, []);
+
+
     const handleInputChange = (e) => {
         setLocalEmailData({ localEmailData, [e.target.name]: e.target.value });
         console.log("localEmailData", localEmailData);
@@ -85,7 +112,7 @@ export const Home = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        actions.updateEmail(...localEmailData);
+        actions.updateEmail(...Object.values(localEmailData));
         console.log(store);
     };
 
@@ -95,15 +122,21 @@ export const Home = () => {
                 {/* Formulario de encabezado */}
                 <Form className="w-50" onSubmit={handleSubmit}>
                     <h3 className="text-center mb-5">Nombre del proyecto</h3>
+
                     <Form.Group controlId="formProjectName">
                         <Form.Label>Nombre del proyecto</Form.Label>
                         <Form.Control
-                            type="text"
-                            placeholder="Nombre del proyecto"
+                            as="select"
                             name="projectName"
-                            onChange={(e) => actions.updateEmail({ nombreDelProyecto: e.target.value })}
+                            value={localEmailData.nombreDelProyecto}
+                            onChange={(e) => setLocalEmailData({ ...localEmailData, nombreDelProyecto: e.target.value })}
                             required
-                        />
+                        >
+                            <option value="" disabled>Selecciona un proyecto</option>
+                            {projectNames.map((project, index) => (
+                                <option key={index} value={project}>{project}</option>
+                            ))}
+                        </Form.Control>
                     </Form.Group>
 
                     <h3 className="text-center mt-5">Header</h3>

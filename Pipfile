@@ -22,6 +22,8 @@ psycopg2 = "*"
 postgres = "*"
 pygresql = "*"
 mysqlclient = "*"
+cryptography = "*"
+pymysql = "*"
 
 [requires]
 python_version = "*"
