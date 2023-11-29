@@ -80,6 +80,45 @@ const getState = ({ getStore, getActions, setStore }) => {
             }
         },
         actions: {
+            fetchData: async () => {
+                try {
+                    // Obtener datos del correo electrónico
+                    const emailResponse = await fetch(`${process.env.BACKEND_URL}api/get_project_names`);
+                    if (!emailResponse.ok) {
+                        throw new Error(`Error: ${emailResponse.status} - ${emailResponse.statusText}`);
+                    }
+                    const emailData = await emailResponse.json();
+                    console.log('Email Data:', emailData);  // Agregado para depuración
+
+                    // Actualiza el estado global con los datos obtenidos
+                    getActions().updateEmailData(emailData.email_data);
+                    getActions().updateProjectNames(emailData.project_names);
+                } catch (error) {
+                    console.error('Error:', error);
+                }
+            },
+
+            updateEmailData: (emailData) => {
+                setStore((prevStore) => ({
+                    ...prevStore,
+                    email: {
+                        ...prevStore.email,
+                        // Actualiza con los nuevos datos
+                        email_data: emailData
+                    }
+                }));
+            },
+
+            updateProjectNames: (projectNames) => {
+                setStore((prevStore) => ({
+                    ...prevStore,
+                    email: {
+                        ...prevStore.email,
+                        // Actualiza con los nuevos nombres de proyectos
+                        project_names: projectNames
+                    }
+                }));
+            },
             updateEmail: (newData) => {
                 setStore({
                     ...getStore(),

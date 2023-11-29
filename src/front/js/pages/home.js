@@ -80,29 +80,13 @@ export const Home = () => {
     });
 
     useEffect(() => {
-        // Aquí realizas la solicitud para obtener los datos desde la base de datos
-        const fetchData = async () => {
-            try {
-                const response = await fetch(`${process.env.BACKEND_URL}/api/get_email_data`);
-                if (!response.ok) {
-                    throw new Error('Error al obtener datos del servidor');
-                }
-
-                const data = await response.json();
-
-                // Actualiza el estado local con los datos obtenidos
-                setLocalEmailData(data.email_data);
-
-                // Actualiza el estado local con los nombres de proyectos
-                setProjectNames(data.project_names);
-            } catch (error) {
-                console.error('Error:', error);
-            }
-        };
-
-        fetchData(); // Llama a la función para obtener los datos cuando el componente se monta
+        actions.fetchData();  // Llama a la nueva acción para obtener los datos iniciales
     }, []);
 
+    useEffect(() => {
+        // Actualiza el estado local cuando projectNames se actualiza en el store
+        setProjectNames(store.email.nombreDelProyecto || []);
+    }, [store.email.nombreDelProyecto]);
 
     const handleInputChange = (e) => {
         setLocalEmailData({ localEmailData, [e.target.name]: e.target.value });

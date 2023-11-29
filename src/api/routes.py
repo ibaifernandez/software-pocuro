@@ -7,10 +7,20 @@ api = Blueprint('api', __name__)
 # Allow CORS requests to this API
 CORS(api)
 
-@api.route('/api/get_project_names', methods=['GET'])
+@api.route('/get_project_names', methods=['GET'])
+def get_project_names():
+    try:
+        # Obtén la lista de nombres de proyectos desde la base de datos
+        project_names = [project.nombre_del_proyecto for project in Email.query.all()]
+
+        # Devuelve la lista de nombres de proyectos como JSON
+        return jsonify({"project_names": project_names})
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+@api.route('/api/get_email_data', methods=['GET'])
 def get_email_data_and_projects():
     try:
-        # Obtén el nombre del proyecto desde la solicitud
         project_name = request.args.get('project_name')
 
         # Verifica que se haya proporcionado un nombre de proyecto
