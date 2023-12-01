@@ -83,42 +83,60 @@ const getState = ({ getStore, getActions, setStore }) => {
             fetchData: async () => {
                 try {
                     // Obtener datos del correo electrónico
-                    const emailResponse = await fetch(`${process.env.BACKEND_URL}api/get_project_names`);
+                    const emailResponse = await fetch(`${process.env.BACKEND_URL}/api/get_project_names`);
                     if (!emailResponse.ok) {
                         throw new Error(`Error: ${emailResponse.status} - ${emailResponse.statusText}`);
                     }
                     const emailData = await emailResponse.json();
                     console.log('Email Data:', emailData);  // Agregado para depuración
+                    console.log('Email Data (email_data):', emailData.project_names);  // Agregado para depuración
 
                     // Actualiza el estado global con los datos obtenidos
-                    getActions().updateEmailData(emailData.email_data);
+                    getActions().updateEmailData(emailData.project_names);
+                    console.log("prevStore", getStore().prevStore);
                     getActions().updateProjectNames(emailData.project_names);
+                    console.log("prevStore II", getStore().prevStore);
+                    setStore({
+                        ...getStore(),
+                        email: {
+                            ...getStore().email,
+                            ...emailData.project_names,
+                        }
+                    });
+
                 } catch (error) {
                     console.error('Error:', error);
                 }
             },
 
             updateEmailData: (emailData) => {
+                console.log("emailData", emailData)
+                let prevStore = getStore();
+                console.log("115", prevStore)
                 setStore((prevStore) => ({
                     ...prevStore,
                     email: {
-                        ...prevStore.email,
+                        ...prevStore.nombreDelProyecto,
                         // Actualiza con los nuevos datos
-                        email_data: emailData
+                        nombreDelProyecto: emailData.project_names
                     }
                 }));
+                console.log("124", prevStore)
             },
 
             updateProjectNames: (projectNames) => {
+                console.log("projectNames 127", projectNames)
+                console.log("prevStore 128", getStore().prevStore)
                 setStore((prevStore) => ({
                     ...prevStore,
                     email: {
                         ...prevStore.email,
                         // Actualiza con los nuevos nombres de proyectos
-                        project_names: projectNames
+                        nombreDelProyecto: projectNames
                     }
                 }));
             },
+
             updateEmail: (newData) => {
                 setStore({
                     ...getStore(),
@@ -128,6 +146,7 @@ const getState = ({ getStore, getActions, setStore }) => {
                     }
                 });
             },
+
             sendFormData: async (formData) => {
                 try {
                     const response = await fetch(`${process.env.BACKEND_URL}/api/save_user`, {
